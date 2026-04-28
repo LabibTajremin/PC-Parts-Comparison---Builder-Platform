@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"DONE: $?\")",
+      "Bash(echo \"EXIT_CODE: $?\")",
+      "Bash(npx prisma *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(powershell -Command \"Set-Location 'D:\\\\Streams Tech\\\\Projects\\\\personal project\\\\PC Parts Comparison & Builder Platform\\\\apps\\\\api'; npx prisma generate\")",
+      "Bash(node \"d:/Streams Tech/Projects/personal project/PC Parts Comparison & Builder Platform/node_modules/prisma/build/index.js\" generate --schema=\"d:/Streams Tech/Projects/personal project/PC Parts Comparison & Builder Platform/apps/api/prisma/schema.prisma\")",
+      "Bash(docker --version)",
+      "Bash(docker-compose --version)",
+      "Bash(docker-compose -f docker-compose.dev.yml up -d)",
+      "Bash(docker info *)",
+      "Bash(\"C:/Program Files/Git/bin/bash.exe\" -c \"cd 'd:/Streams Tech/Projects/personal project/PC Parts Comparison & Builder Platform' && node node_modules/prisma/build/index.js generate --schema=apps/api/prisma/schema.prisma\")"
+    ]
+  }
+}

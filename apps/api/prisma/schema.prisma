@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  category      String
+  brand         String
+  model         String
+  imageUrl      String?
+  description   String?
+  specifications String   // stored as JSON string
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  prices           VendorPrice[]
+  compatibilities  ProductCompatibility[] @relation("BaseProduct")
+  compatibleWith   ProductCompatibility[] @relation("CompatibleProduct")
+
+  @@index([category])
+  @@index([slug])
+}
+
+model Vendor {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  websiteUrl  String
+  logoUrl     String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  prices      VendorPrice[]
+}
+
+model VendorPrice {
+  id          String   @id @default(cuid())
+  productId   String
+  vendorId    String
+  price       Float
+  currency    String   @default("BDT")
+  vendorUrl   String
+  inStock     Boolean  @default(true)
+  isLowest    Boolean  @default(false)
+  lastUpdated DateTime @default(now())
+  isStale     Boolean  @default(false)
+
+  product     Product  @relation(fields: [productId], references: [id])
+  vendor      Vendor   @relation(fields: [vendorId], references: [id])
+
+  @@unique([productId, vendorId])
+  @@index([productId])
+  @@index([vendorId])
+}
+
+model ProductCompatibility {
+  id                  String  @id @default(cuid())
+  baseProductId       String
+  compatibleProductId String
+  compatibilityType   String
+  isCompatible        Boolean
+  notes               String?
+
+  baseProduct       Product @relation("BaseProduct", fields: [baseProductId], references: [id])
+  compatibleProduct Product @relation("CompatibleProduct", fields: [compatibleProductId], references: [id])
+
+  @@unique([baseProductId, compatibleProductId, compatibilityType])
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  lastLogin    DateTime?
+}
+
+model PriceUpdateLog {
+  id              String    @id @default(cuid())
+  vendorId        String
+  status          String
+  productsUpdated Int       @default(0)
+  errorMessage    String?
+  startedAt       DateTime
+  completedAt     DateTime?
+}
