@@ -11,7 +11,8 @@
       "Bash(docker-compose --version)",
       "Bash(docker-compose -f docker-compose.dev.yml up -d)",
       "Bash(docker info *)",
-      "Bash(\"C:/Program Files/Git/bin/bash.exe\" -c \"cd 'd:/Streams Tech/Projects/personal project/PC Parts Comparison & Builder Platform' && node node_modules/prisma/build/index.js generate --schema=apps/api/prisma/schema.prisma\")"
+      "Bash(\"C:/Program Files/Git/bin/bash.exe\" -c \"cd 'd:/Streams Tech/Projects/personal project/PC Parts Comparison & Builder Platform' && node node_modules/prisma/build/index.js generate --schema=apps/api/prisma/schema.prisma\")",
+      "Bash('C:/Program Files/Git/bin/bash.exe' -c ' *)"
     ]
   }
 }
