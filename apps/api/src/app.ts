@@ -44,36 +44,31 @@ app.use('/api/v1/admin', adminRoutes);
 // Error handler
 app.use(errorMiddleware);
 
-async function start() {
-  try {
-    await connectDatabase();
+// Connect DB eagerly (non-blocking for serverless)
+connectDatabase().catch((err) => logger.error('DB connection error', err));
 
-    // Connect redis (non-fatal if unavailable)
-    try {
-      getRedisClient();
-    } catch (err) {
-      logger.warn('Redis unavailable, continuing without cache', err);
-    }
-
-    app.listen(PORT, () => {
-      logger.info(`API server running on port ${PORT}`);
-    });
-
-    if (process.env.NODE_ENV === 'production') {
-      schedulePriceUpdateJob();
-    }
-  } catch (err) {
-    logger.error('Failed to start server', err);
-    process.exit(1);
-  }
+// Connect redis (non-fatal)
+try {
+  getRedisClient();
+} catch (err) {
+  logger.warn('Redis unavailable, continuing without cache', err);
 }
 
-process.on('SIGTERM', async () => {
-  logger.info('Shutting down...');
-  await disconnectDatabase();
-  process.exit(0);
-});
+// Start server only when run directly (not on Vercel serverless)
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    logger.info(`API server running on port ${PORT}`);
+  });
 
-start();
+  if (process.env.NODE_ENV === 'production') {
+    schedulePriceUpdateJob();
+  }
+
+  process.on('SIGTERM', async () => {
+    logger.info('Shutting down...');
+    await disconnectDatabase();
+    process.exit(0);
+  });
+}
 
 export default app;
