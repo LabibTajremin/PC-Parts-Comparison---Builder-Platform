@@ -20,8 +20,29 @@ const PORT = parseInt(process.env.API_PORT || '4000');
 
 // Security middleware
 app.use(helmet());
+
+// Build allowed origins list from env (supports comma-separated values)
+const rawOrigins = process.env.FRONTEND_URL || 'http://localhost:3000';
+const allowedOrigins = rawOrigins
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+// Always allow localhost in development
+if (process.env.NODE_ENV !== 'production') {
+  if (!allowedOrigins.includes('http://localhost:3000')) allowedOrigins.push('http://localhost:3000');
+  if (!allowedOrigins.includes('http://localhost:3001')) allowedOrigins.push('http://localhost:3001');
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow server-to-server requests (no Origin header)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow any *.vercel.app preview deploy
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    callback(new Error(`CORS: origin not allowed — ${origin}`));
+  },
   credentials: true,
 }));
 app.use(compression());
