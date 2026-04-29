@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { ComponentCategory } from '@prisma/client';
+import { COMPONENT_CATEGORIES } from '../../shared/types';
 
 export const productQuerySchema = z.object({
   query: z.object({
-    category: z.nativeEnum(ComponentCategory).optional(),
+    category: z.enum(COMPONENT_CATEGORIES).optional(),
     brand: z.string().optional(),
     minPrice: z.coerce.number().positive().optional(),
     maxPrice: z.coerce.number().positive().optional(),
@@ -24,7 +24,7 @@ export const createProductSchema = z.object({
   body: z.object({
     name: z.string().min(1),
     slug: z.string().min(1),
-    category: z.nativeEnum(ComponentCategory),
+    category: z.enum(COMPONENT_CATEGORIES),
     brand: z.string().min(1),
     model: z.string().min(1),
     imageUrl: z.string().url().optional(),
@@ -39,7 +39,7 @@ export const updateProductSchema = z.object({
   body: z.object({
     name: z.string().min(1).optional(),
     slug: z.string().min(1).optional(),
-    category: z.nativeEnum(ComponentCategory).optional(),
+    category: z.enum(COMPONENT_CATEGORIES).optional(),
     brand: z.string().min(1).optional(),
     model: z.string().min(1).optional(),
     imageUrl: z.string().url().nullable().optional(),
@@ -51,6 +51,6 @@ export const updateProductSchema = z.object({
 
 export const categoryParamSchema = z.object({
   params: z.object({
-    category: z.nativeEnum(ComponentCategory),
+    category: z.enum(COMPONENT_CATEGORIES),
   }),
 });

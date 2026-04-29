@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProductService } from './product.service';
 import { AppError } from '../../middleware/error.middleware';
-import { ComponentCategory } from '@prisma/client';
+import { ComponentCategory } from '../../shared/types';
 
 const service = new ProductService();
 

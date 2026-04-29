@@ -31,7 +31,7 @@ export class AIService {
   }
 
   async getBuildAdvice(params: BuildAdviceParams): Promise<BuildAdvice> {
-    const cacheKey = CACHE_KEYS.AI_BUILD_ADVICE(hashFilters(params as Record<string, unknown>));
+    const cacheKey = CACHE_KEYS.AI_BUILD_ADVICE(hashFilters(params as unknown as Record<string, unknown>));
     const cached = await cacheGet<BuildAdvice>(cacheKey);
     if (cached) return cached;
 
@@ -103,7 +103,7 @@ Please provide build advice.`;
   }
 
   async explainCompatibility(params: CompatibilityParams): Promise<string> {
-    const cacheKey = `ai:compat:${hashFilters(params as Record<string, unknown>)}`;
+    const cacheKey = `ai:compat:${hashFilters(params as unknown as Record<string, unknown>)}`;
     const cached = await cacheGet<string>(cacheKey);
     if (cached) return cached;
 

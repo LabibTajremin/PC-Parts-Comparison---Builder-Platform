@@ -10,7 +10,7 @@ const router = Router();
 router.post('/auth/login', login);
 
 // Protected routes
-router.use(authMiddleware as Parameters<typeof router.use>[0]);
+router.use(authMiddleware as unknown as Parameters<typeof router.use>[0]);
 
 router.get('/products', getProducts);
 router.post('/products', createProduct);

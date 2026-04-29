@@ -17,7 +17,7 @@ export class AdminService {
     const token = jwt.sign(
       { adminId: admin.id, email: admin.email },
       process.env.ADMIN_JWT_SECRET || 'secret',
-      { expiresIn: process.env.ADMIN_JWT_EXPIRES_IN || '24h' }
+      { expiresIn: (process.env.ADMIN_JWT_EXPIRES_IN || '24h') as `${number}${'s'|'m'|'h'|'d'|'w'|'y'}` }
     );
 
     return { token, admin: { id: admin.id, email: admin.email, name: admin.name } };
@@ -40,7 +40,10 @@ export class AdminService {
     description?: string;
     specifications: Record<string, unknown>;
   }) {
-    const product = await prisma.product.create({ data: data as Parameters<typeof prisma.product.create>[0]['data'] });
+    const { specifications, ...rest } = data;
+    const product = await prisma.product.create({
+      data: { ...rest, specifications: JSON.stringify(specifications) },
+    });
     await cacheDel('products:list:*');
     return product;
   }
@@ -49,7 +52,14 @@ export class AdminService {
     name: string; slug: string; isActive: boolean;
     description: string; imageUrl: string; specifications: Record<string, unknown>;
   }>) {
-    const product = await prisma.product.update({ where: { id }, data });
+    const { specifications, ...rest } = data;
+    const product = await prisma.product.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(specifications !== undefined && { specifications: JSON.stringify(specifications) }),
+      },
+    });
     await cacheDel(`products:detail:${id}`);
     await cacheDel('products:list:*');
     return product;

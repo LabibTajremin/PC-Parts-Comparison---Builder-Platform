@@ -1,6 +1,7 @@
-import { ComponentCategory, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../shared/database';
 import { PAGINATION } from '../../shared/constants';
+import { ComponentCategory } from '../../shared/types';
 
 export interface ProductFilters {
   category?: ComponentCategory;

@@ -23,9 +23,7 @@ interface ProductRow {
 
 function parseSpecs(product: ProductRow): Record<string, unknown> {
   try {
-    return typeof product.specifications === 'string'
-      ? JSON.parse(product.specifications)
-      : (product.specifications as Record<string, unknown>);
+    return JSON.parse(product.specifications);
   } catch {
     return {};
   }
